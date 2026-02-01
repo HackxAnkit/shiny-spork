@@ -1,121 +1,406 @@
-// === public/script.js ===
-const apiBase = 'http://localhost:3000';
+// Client-side expense tracker with advanced UI
+let expenses = [];
 
 window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('addBtn').addEventListener('click', addExpense);
-  document.getElementById('settleBtn').addEventListener('click', settleUp);
-  document.getElementById('resetBtn').addEventListener('click', resetAll);
   loadExpenses();
+  updateSummary();
 });
 
-async function addExpense() {
+// Tab Navigation
+function showTab(tabName) {
+  // Hide all tab panes
+  document.querySelectorAll('.tab-pane').forEach(pane => {
+    pane.classList.remove('active');
+  });
+  
+  // Remove active class from all buttons
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  
+  // Show selected tab
+  document.getElementById(`${tabName}-tab`).classList.add('active');
+  
+  // Add active class to clicked button
+  event.target.closest('.tab-btn').classList.add('active');
+  
+  // Auto-calculate settlements when switching to settlements tab
+  if (tabName === 'settlements') {
+    calculateSettlements();
+  }
+  
+  // Auto-refresh balance sheet when switching to balance tab
+  if (tabName === 'balance') {
+    refreshBalanceSheet();
+  }
+}
+
+function addExpense() {
   const paidBy = document.getElementById('paidBy').value.trim();
   const amount = parseFloat(document.getElementById('amount').value);
   const description = document.getElementById('description').value.trim();
   const sharedRaw = document.getElementById('sharedAmong').value.trim();
   const sharedAmong = sharedRaw.split(',').map(name => name.trim()).filter(Boolean);
 
-  if (!paidBy || isNaN(amount) || sharedAmong.length === 0) {
-    alert('Please fill in all fields correctly');
+  if (!paidBy || isNaN(amount) || amount <= 0) {
+    alert('Please enter a valid payer name and amount');
+    return;
+  }
+  
+  if (!description) {
+    alert('Please enter a description');
+    return;
+  }
+  
+  if (sharedAmong.length === 0) {
+    alert('Please enter at least one person to share the expense');
     return;
   }
 
-  const expense = { paidBy, amount, description, sharedAmong };
-
-  try {
-    const res = await fetch(`${apiBase}/add-expense`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(expense)
-    });
-    const data = await res.json();
-    alert(data.message);
-
-    document.getElementById('paidBy').value = '';
-    document.getElementById('amount').value = '';
-    document.getElementById('description').value = '';
-    document.getElementById('sharedAmong').value = '';
-
-    loadExpenses();
-  } catch (err) {
-    alert('Error adding expense');
-  }
-}
-
-async function loadExpenses() {
-  try {
-    const res = await fetch(`${apiBase}/expenses`);
-    const data = await res.json();
-
-    const expenseList = document.getElementById('expenseList');
-    expenseList.innerHTML = '';
-
-    data.expenses.forEach((exp, index) => {
-      const li = document.createElement('li');
-      li.innerHTML = `<strong>${exp.paidBy}</strong> paid ₹${exp.amount} for ${exp.description} (shared among: ${exp.sharedAmong.join(', ')}) 
-        <button onclick="editExpense(${index})">Edit</button>`;
-      expenseList.appendChild(li);
-    });
-  } catch (err) {
-    console.error('Error loading expenses');
-  }
-}
-
-async function editExpense(index) {
-  const newAmount = prompt('Enter new amount:');
-  const newDescription = prompt('Enter new description:');
-  const newShared = prompt('Enter new members (comma-separated):');
-
-  const updatedExpense = {
-    index,
-    amount: parseFloat(newAmount),
-    description: newDescription,
-    sharedAmong: newShared.split(',').map(name => name.trim())
+  const expense = { 
+    paidBy, 
+    amount, 
+    description, 
+    sharedAmong,
+    date: new Date().toISOString()
   };
+  
+  expenses.push(expense);
+  
+  // Save to localStorage
+  localStorage.setItem('expenses', JSON.stringify(expenses));
 
-  const res = await fetch(`${apiBase}/edit-expense`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(updatedExpense)
-  });
-  const data = await res.json();
-  alert(data.message);
+  // Clear form
+  document.getElementById('paidBy').value = '';
+  document.getElementById('amount').value = '';
+  document.getElementById('description').value = '';
+  document.getElementById('sharedAmong').value = '';
+
+  // Update UI
   loadExpenses();
+  updateSummary();
+  
+  // Show success message
+  showNotification('Expense added successfully!', 'success');
+  
+  // Switch to expenses tab to show the newly added expense
+  setTimeout(() => {
+    document.querySelector('.tab-btn:nth-child(2)').click();
+  }, 500);
 }
 
-async function settleUp() {
-  try {
-    const res = await fetch(`${apiBase}/settle-up`);
-    const data = await res.json();
+function loadExpenses() {
+  // Load from localStorage
+  const stored = localStorage.getItem('expenses');
+  if (stored) {
+    expenses = JSON.parse(stored);
+  }
 
-    const resultList = document.getElementById('result');
-    resultList.innerHTML = '';
+  const expenseList = document.getElementById('expenseList');
+  expenseList.innerHTML = '';
 
-    if (data.settlements.length === 0) {
-      resultList.innerHTML = '<li>No settlements needed</li>';
-      return;
+  if (expenses.length === 0) {
+    expenseList.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-inbox"></i>
+        <p>No expenses added yet.<br>Start by adding your first expense!</p>
+      </div>
+    `;
+    return;
+  }
+
+  expenses.forEach((exp, index) => {
+    const item = document.createElement('div');
+    item.className = 'expense-item';
+    item.innerHTML = `
+      <div class="expense-header">
+        <span class="expense-payer"><i class="fas fa-user"></i> ${exp.paidBy}</span>
+        <span class="expense-amount">₹${exp.amount.toFixed(2)}</span>
+      </div>
+      <div class="expense-description">
+        <i class="fas fa-comment-alt"></i> ${exp.description}
+      </div>
+      <div class="expense-shared">
+        <strong><i class="fas fa-users"></i> Shared among:</strong> ${exp.sharedAmong.join(', ')}
+      </div>
+      <div class="expense-actions">
+        <button class="btn btn-info btn-small" onclick="editExpense(${index})">
+          <i class="fas fa-edit"></i> Edit
+        </button>
+        <button class="btn btn-danger btn-small" onclick="deleteExpense(${index})">
+          <i class="fas fa-trash"></i> Delete
+        </button>
+      </div>
+    `;
+    expenseList.appendChild(item);
+  });
+}
+
+function editExpense(index) {
+  const exp = expenses[index];
+  const newAmount = prompt('Enter new amount:', exp.amount);
+  const newDescription = prompt('Enter new description:', exp.description);
+  const newShared = prompt('Enter new members (comma-separated):', exp.sharedAmong.join(', '));
+
+  if (newAmount && newDescription && newShared) {
+    expenses[index] = {
+      ...expenses[index],
+      amount: parseFloat(newAmount),
+      description: newDescription,
+      sharedAmong: newShared.split(',').map(name => name.trim())
+    };
+    
+    localStorage.setItem('expenses', JSON.stringify(expenses));
+    loadExpenses();
+    updateSummary();
+    showNotification('Expense updated successfully!', 'success');
+  }
+}
+
+function deleteExpense(index) {
+  if (confirm('Are you sure you want to delete this expense?')) {
+    expenses.splice(index, 1);
+    localStorage.setItem('expenses', JSON.stringify(expenses));
+    loadExpenses();
+    updateSummary();
+    showNotification('Expense deleted successfully!', 'success');
+  }
+}
+
+function calculateSettlements() {
+  const resultList = document.getElementById('result');
+  
+  if (expenses.length === 0) {
+    resultList.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-exchange-alt"></i>
+        <p>No expenses to settle.<br>Add some expenses first!</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Calculate net balance for each person
+  const balance = {};
+  
+  expenses.forEach(exp => {
+    const share = exp.amount / exp.sharedAmong.length;
+    
+    // Person who paid gets credited
+    if (!balance[exp.paidBy]) balance[exp.paidBy] = 0;
+    balance[exp.paidBy] += exp.amount;
+    
+    // People who shared the expense get debited
+    exp.sharedAmong.forEach(person => {
+      if (!balance[person]) balance[person] = 0;
+      balance[person] -= share;
+    });
+  });
+
+  // Separate creditors (positive balance) and debtors (negative balance)
+  const creditors = [];
+  const debtors = [];
+  
+  Object.keys(balance).forEach(person => {
+    const amount = Math.round(balance[person] * 100) / 100;
+    if (amount > 0.01) {
+      creditors.push({ person, amount });
+    } else if (amount < -0.01) {
+      debtors.push({ person, amount: Math.abs(amount) });
     }
+  });
 
-    data.settlements.forEach(item => {
-      const li = document.createElement('li');
-      li.textContent = item;
-      resultList.appendChild(li);
+  // Sort creditors and debtors
+  creditors.sort((a, b) => b.amount - a.amount);
+  debtors.sort((a, b) => b.amount - a.amount);
+
+  const settlements = [];
+  let i = 0, j = 0;
+
+  // Minimize cash flow
+  while (i < creditors.length && j < debtors.length) {
+    const minAmount = Math.min(creditors[i].amount, debtors[j].amount);
+    settlements.push({
+      from: debtors[j].person,
+      to: creditors[i].person,
+      amount: minAmount
     });
-  } catch (err) {
-    alert('Error retrieving settlements');
+    
+    creditors[i].amount -= minAmount;
+    debtors[j].amount -= minAmount;
+    
+    if (creditors[i].amount < 0.01) i++;
+    if (debtors[j].amount < 0.01) j++;
+  }
+
+  resultList.innerHTML = '';
+
+  if (settlements.length === 0) {
+    resultList.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-check-circle"></i>
+        <p>All settled! No payments needed.<br>Everyone is even!</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Hide info box when showing results
+  document.getElementById('settlementInfo').style.display = 'none';
+
+  settlements.forEach(settlement => {
+    const item = document.createElement('div');
+    item.className = 'settlement-item';
+    item.innerHTML = `
+      <div class="settlement-icon">
+        <i class="fas fa-arrow-right"></i>
+      </div>
+      <div class="settlement-text">
+        <span class="from">${settlement.from}</span> pays 
+        <span class="amount">₹${settlement.amount.toFixed(2)}</span> to 
+        <span class="to">${settlement.to}</span>
+      </div>
+    `;
+    resultList.appendChild(item);
+  });
+}
+
+function resetAll() {
+  if (confirm('Are you sure you want to reset all expenses? This action cannot be undone.')) {
+    expenses = [];
+    localStorage.removeItem('expenses');
+    loadExpenses();
+    updateSummary();
+    document.getElementById('result').innerHTML = '';
+    document.getElementById('balanceSheet').innerHTML = '';
+    document.getElementById('settlementInfo').style.display = 'flex';
+    showNotification('All expenses cleared!', 'success');
   }
 }
 
-async function resetAll() {
-  try {
-    const res = await fetch(`${apiBase}/reset`, {
-      method: 'POST'
-    });
-    const data = await res.json();
-    alert(data.message);
-    document.getElementById('result').innerHTML = '';
-    document.getElementById('expenseList').innerHTML = '';
-  } catch (err) {
-    alert('Error resetting data');
+// Update Summary Statistics
+function updateSummary() {
+  const totalExpenses = expenses.length;
+  const totalAmount = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+  const people = new Set();
+  
+  expenses.forEach(exp => {
+    people.add(exp.paidBy);
+    exp.sharedAmong.forEach(person => people.add(person));
+  });
+  
+  document.getElementById('totalExpenses').textContent = totalExpenses;
+  document.getElementById('totalAmount').textContent = `₹${totalAmount.toFixed(2)}`;
+  document.getElementById('totalPeople').textContent = people.size;
+}
+
+// Refresh Balance Sheet
+function refreshBalanceSheet() {
+  const balanceSheet = document.getElementById('balanceSheet');
+  
+  if (expenses.length === 0) {
+    balanceSheet.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-balance-scale"></i>
+        <p>No balance data available.<br>Add expenses to see the balance sheet!</p>
+      </div>
+    `;
+    document.getElementById('balanceInfo').style.display = 'flex';
+    return;
   }
+
+  // Calculate balances
+  const balance = {};
+  
+  expenses.forEach(exp => {
+    const share = exp.amount / exp.sharedAmong.length;
+    
+    if (!balance[exp.paidBy]) balance[exp.paidBy] = 0;
+    balance[exp.paidBy] += exp.amount;
+    
+    exp.sharedAmong.forEach(person => {
+      if (!balance[person]) balance[person] = 0;
+      balance[person] -= share;
+    });
+  });
+
+  const creditors = [];
+  const debtors = [];
+  
+  Object.keys(balance).forEach(person => {
+    const amount = Math.round(balance[person] * 100) / 100;
+    if (amount > 0.01) {
+      creditors.push({ person, amount });
+    } else if (amount < -0.01) {
+      debtors.push({ person, amount: Math.abs(amount) });
+    }
+  });
+
+  creditors.sort((a, b) => b.amount - a.amount);
+  debtors.sort((a, b) => b.amount - a.amount);
+
+  // Hide info box when showing results
+  document.getElementById('balanceInfo').style.display = 'none';
+
+  // Build HTML
+  let html = '';
+
+  // Creditors section
+  html += `
+    <div class="balance-section creditors">
+      <h3><i class="fas fa-arrow-up"></i> To Receive (Creditors)</h3>
+      <div class="balance-list">
+  `;
+  
+  if (creditors.length === 0) {
+    html += `<p style="color: #8892b0; text-align: center;">No one is owed money</p>`;
+  } else {
+    creditors.forEach(c => {
+      html += `
+        <div class="balance-person">
+          <span class="name"><i class="fas fa-user"></i> ${c.person}</span>
+          <span class="amount">+₹${c.amount.toFixed(2)}</span>
+        </div>
+      `;
+    });
+  }
+  
+  html += `
+      </div>
+    </div>
+  `;
+
+  // Debtors section
+  html += `
+    <div class="balance-section debtors">
+      <h3><i class="fas fa-arrow-down"></i> To Pay (Debtors)</h3>
+      <div class="balance-list">
+  `;
+  
+  if (debtors.length === 0) {
+    html += `<p style="color: #8892b0; text-align: center;">No one owes money</p>`;
+  } else {
+    debtors.forEach(d => {
+      html += `
+        <div class="balance-person">
+          <span class="name"><i class="fas fa-user"></i> ${d.person}</span>
+          <span class="amount">-₹${d.amount.toFixed(2)}</span>
+        </div>
+      `;
+    });
+  }
+  
+  html += `
+      </div>
+    </div>
+  `;
+
+  balanceSheet.innerHTML = html;
+}
+
+// Show Notification (simple alert for now, can be enhanced)
+function showNotification(message, type) {
+  // For now, we'll use a simple alert
+  // This can be enhanced with a toast notification library
+  console.log(`${type.toUpperCase()}: ${message}`);
 }

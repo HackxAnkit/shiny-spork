@@ -1,379 +1,183 @@
-// === public/index.html ===
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <title>Cash Flow Minimizer</title>
-  <style>
-    body { font-family: Arial; padding: 20px; }
-    input, button, select { margin: 10px; padding: 8px; width: 500;}
-    .expense-item { margin-bottom: 10px; }
-  </style>
 </head>
 <body>
-  <section>
+  <!-- Animated Background -->
+  <section id="background-section"></section>
 
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-
-        <div class="signin">
-            <div class="content">
+  <!-- Main App Container -->
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo">
+        <i class="fas fa-coins"></i>
         <h1>Cash Flow Minimizer</h1>
-
+      </div>
+      <div class="summary-bar">
+        <div class="summary-item">
+          <i class="fas fa-receipt"></i>
           <div>
-            <input type="text" id="paidBy" placeholder="Paid by (name)" /><br>
-            <input type="number" id="amount" placeholder="Amount" /><br>
-            <input type="text" id="description" placeholder="Description" /><br>
-            <input type="text" id="sharedAmong" placeholder="Shared among (comma separated names)" /><br>
-            <button onclick="addExpense()">Add Expense</button>
+            <span class="summary-label">Total Expenses</span>
+            <span class="summary-value" id="totalExpenses">0</span>
           </div>
-
+        </div>
+        <div class="summary-item">
+          <i class="fas fa-rupee-sign"></i>
           <div>
-            <button type="button" class="btn btn-outline-success" onclick="settleUp()">Settle Up</button>
-            <button onclick="resetAll()">Reset</button>
+            <span class="summary-label">Total Amount</span>
+            <span class="summary-value" id="totalAmount">₹0</span>
           </div>
-        
-          <div class="signin2">
+        </div>
+        <div class="summary-item">
+          <i class="fas fa-users"></i>
+          <div>
+            <span class="summary-label">People Involved</span>
+            <span class="summary-value" id="totalPeople">0</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="tab-navigation">
+      <button class="tab-btn active" onclick="showTab('add')">
+        <i class="fas fa-plus-circle"></i>
+        <span>Add Expense</span>
+      </button>
+      <button class="tab-btn" onclick="showTab('expenses')">
+        <i class="fas fa-list"></i>
+        <span>All Expenses</span>
+      </button>
+      <button class="tab-btn" onclick="showTab('settlements')">
+        <i class="fas fa-exchange-alt"></i>
+        <span>Settlements</span>
+      </button>
+      <button class="tab-btn" onclick="showTab('balance')">
+        <i class="fas fa-balance-scale"></i>
+        <span>Balance Sheet</span>
+      </button>
+    </nav>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+      
+      <!-- Add Expense Tab -->
+      <div id="add-tab" class="tab-pane active">
+        <div class="content-card">
+          <div class="card-header">
+            <i class="fas fa-wallet"></i>
+            <h2>Add New Expense</h2>
+          </div>
+          <div class="form-container">
+            <div class="input-group">
+              <label for="paidBy">
+                <i class="fas fa-user"></i> Paid By
+              </label>
+              <input type="text" id="paidBy" placeholder="Enter name" />
+            </div>
             
-          <h1>Settlement Result:</h1>
-          <br><br>
-
-          <ul id="expenseList"></ul>
-          <br><br>
-          <ul id="result"></ul>
-          <br><br>
+            <div class="input-group">
+              <label for="amount">
+                <i class="fas fa-rupee-sign"></i> Amount
+              </label>
+              <input type="number" id="amount" placeholder="Enter amount" step="0.01" />
+            </div>
+            
+            <div class="input-group">
+              <label for="description">
+                <i class="fas fa-file-alt"></i> Description
+              </label>
+              <input type="text" id="description" placeholder="What was it for?" />
+            </div>
+            
+            <div class="input-group">
+              <label for="sharedAmong">
+                <i class="fas fa-users"></i> Shared Among
+              </label>
+              <input type="text" id="sharedAmong" placeholder="Names separated by commas (e.g., Alice, Bob, Charlie)" />
+              <small class="input-hint">Include the payer if they are also sharing the expense</small>
+            </div>
+            
+            <button class="btn btn-primary btn-large" onclick="addExpense()">
+              <i class="fas fa-plus"></i> Add Expense
+            </button>
           </div>
-      </form>
+        </div>
+      </div>
 
+      <!-- Expenses List Tab -->
+      <div id="expenses-tab" class="tab-pane">
+        <div class="content-card">
+          <div class="card-header">
+            <div>
+              <i class="fas fa-list-ul"></i>
+              <h2>All Expenses</h2>
+            </div>
+            <button class="btn btn-danger btn-small" onclick="resetAll()">
+              <i class="fas fa-trash"></i> Clear All
+            </button>
+          </div>
+          <div id="expenseList" class="expense-list"></div>
+        </div>
+      </div>
+
+      <!-- Settlements Tab -->
+      <div id="settlements-tab" class="tab-pane">
+        <div class="content-card">
+          <div class="card-header">
+            <div>
+              <i class="fas fa-handshake"></i>
+              <h2>Settlement Recommendations</h2>
+            </div>
+            <button class="btn btn-success btn-small" onclick="calculateSettlements()">
+              <i class="fas fa-calculator"></i> Calculate
+            </button>
+          </div>
+          <div id="settlementInfo" class="info-box">
+            <i class="fas fa-info-circle"></i>
+            <p>Click "Calculate" to see the minimum number of transactions needed to settle all expenses.</p>
+          </div>
+          <div id="result" class="settlement-list"></div>
+        </div>
+      </div>
+
+      <!-- Balance Sheet Tab -->
+      <div id="balance-tab" class="tab-pane">
+        <div class="content-card">
+          <div class="card-header">
+            <div>
+              <i class="fas fa-chart-pie"></i>
+              <h2>Balance Sheet</h2>
+            </div>
+            <button class="btn btn-info btn-small" onclick="refreshBalanceSheet()">
+              <i class="fas fa-sync"></i> Refresh
+            </button>
+          </div>
+          <div id="balanceInfo" class="info-box">
+            <i class="fas fa-info-circle"></i>
+            <p>View who owes money (debtors) and who should receive money (creditors).</p>
+          </div>
+          <div id="balanceSheet" class="balance-container"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Generate background spans dynamically
+    const section = document.getElementById('background-section');
+    for(let i = 0; i < 320; i++) {
+      const span = document.createElement('span');
+      section.appendChild(span);
+    }
+  </script>
   <script src="script.js"></script>
 </body>
 </html>
