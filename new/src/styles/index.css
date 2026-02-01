@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+    background: #0a0e27;
+    position: relative;
+    transition: background 0.3s ease;
+}
+
+body.light-mode {
+    background: #f0f4f8;
+}
+
+body.light-mode #background-section span {
+    background: #e8ecf0;
+}
+
+body.light-mode #background-section::before {
+    background: linear-gradient(180deg, #fff 0%, #00ff88 50%, #fff 100%);
+}
+
+#background-section {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+    flex-wrap: wrap;
+    overflow: hidden;
+    z-index: 1;
+}
+
+#background-section::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, #000 0%, #00ff88 50%, #000 100%);
+    animation: gradientMove 5s linear infinite;
+}
+
+@keyframes gradientMove {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+}
+
+#background-section span {
+    position: relative;
+    display: block;
+    width: calc(6.25vw - 2px);
+    height: calc(6.25vw - 2px);
+    background: #0a0e27;
+    z-index: 2;
+    transition: background 1.5s ease;
+}
+
+#background-section span:hover {
+    background: rgba(0, 255, 136, 0.3);
+    transition: background 0s;
+}
+
+.App {
+    position: relative;
+    z-index: 100;
+}
