@@ -11,33 +11,57 @@
   <!-- Animated Background -->
   <section id="background-section"></section>
 
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-left">
+      <button class="nav-btn" onclick="showModal('about')">
+        <i class="fas fa-info-circle"></i>
+        <span data-lang="about">About</span>
+      </button>
+      <button class="nav-btn" onclick="showModal('contact')">
+        <i class="fas fa-envelope"></i>
+        <span data-lang="contact">Contact</span>
+      </button>
+    </div>
+    <div class="nav-right">
+      <button class="nav-btn" id="themeToggle" onclick="toggleTheme()">
+        <i class="fas fa-moon"></i>
+        <span data-lang="theme">Dark Mode</span>
+      </button>
+      <button class="nav-btn" id="languageToggle" onclick="toggleLanguage()">
+        <i class="fas fa-language"></i>
+        <span id="currentLang">English</span>
+      </button>
+    </div>
+  </nav>
+
   <!-- Main App Container -->
   <div class="app-container">
     <!-- Header -->
     <header class="app-header">
       <div class="logo">
         <i class="fas fa-coins"></i>
-        <h1>Cash Flow Minimizer</h1>
+        <h1 data-lang="title">Cash Flow Minimizer</h1>
       </div>
       <div class="summary-bar">
         <div class="summary-item">
           <i class="fas fa-receipt"></i>
           <div>
-            <span class="summary-label">Total Expenses</span>
+            <span class="summary-label" data-lang="totalExpensesLabel">Total Expenses</span>
             <span class="summary-value" id="totalExpenses">0</span>
           </div>
         </div>
         <div class="summary-item">
           <i class="fas fa-rupee-sign"></i>
           <div>
-            <span class="summary-label">Total Amount</span>
+            <span class="summary-label" data-lang="totalAmountLabel">Total Amount</span>
             <span class="summary-value" id="totalAmount">₹0</span>
           </div>
         </div>
         <div class="summary-item">
           <i class="fas fa-users"></i>
           <div>
-            <span class="summary-label">People Involved</span>
+            <span class="summary-label" data-lang="totalPeopleLabel">People Involved</span>
             <span class="summary-value" id="totalPeople">0</span>
           </div>
         </div>
@@ -48,19 +72,19 @@
     <nav class="tab-navigation">
       <button class="tab-btn active" onclick="showTab('add')">
         <i class="fas fa-plus-circle"></i>
-        <span>Add Expense</span>
+        <span data-lang="addExpenseTab">Add Expense</span>
       </button>
       <button class="tab-btn" onclick="showTab('expenses')">
         <i class="fas fa-list"></i>
-        <span>All Expenses</span>
+        <span data-lang="allExpensesTab">All Expenses</span>
       </button>
       <button class="tab-btn" onclick="showTab('settlements')">
         <i class="fas fa-exchange-alt"></i>
-        <span>Settlements</span>
+        <span data-lang="settlementsTab">Settlements</span>
       </button>
       <button class="tab-btn" onclick="showTab('balance')">
         <i class="fas fa-balance-scale"></i>
-        <span>Balance Sheet</span>
+        <span data-lang="balanceTab">Balance Sheet</span>
       </button>
     </nav>
 
@@ -70,6 +94,9 @@
       <!-- Add Expense Tab -->
       <div id="add-tab" class="tab-pane active">
         <div class="content-card">
+          <div class="hero-image">
+            <img src="images/cash.png" alt="Expense Management">
+          </div>
           <div class="card-header">
             <i class="fas fa-wallet"></i>
             <h2>Add New Expense</h2>
@@ -167,6 +194,48 @@
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- About Modal -->
+  <div id="aboutModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeModal('about')">&times;</span>
+      <h2><i class="fas fa-info-circle"></i> <span data-lang="aboutTitle">About Cash Flow Minimizer</span></h2>
+      <p data-lang="aboutText1">Cash Flow Minimizer is a smart expense splitting tool that helps you manage shared expenses among friends, roommates, or colleagues.</p>
+      <p data-lang="aboutText2">The app uses an optimized algorithm to minimize the number of transactions needed to settle all debts, making it easier and faster to split bills.</p>
+      <h3 data-lang="features">Features:</h3>
+      <ul>
+        <li data-lang="feature1">✓ Add and manage expenses easily</li>
+        <li data-lang="feature2">✓ Automatic settlement calculations</li>
+        <li data-lang="feature3">✓ Visual balance sheet</li>
+        <li data-lang="feature4">✓ Minimal transaction optimization</li>
+        <li data-lang="feature5">✓ Dark/Light mode support</li>
+        <li data-lang="feature6">✓ Multi-language support (English/Hindi)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Contact Modal -->
+  <div id="contactModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeModal('contact')">&times;</span>
+      <h2><i class="fas fa-envelope"></i> <span data-lang="contactTitle">Contact Us</span></h2>
+      <p data-lang="contactText">Have questions or feedback? We'd love to hear from you!</p>
+      <div class="contact-info">
+        <div class="contact-item">
+          <i class="fas fa-envelope"></i>
+          <span>support@cashflowminimizer.com</span>
+        </div>
+        <div class="contact-item">
+          <i class="fab fa-github"></i>
+          <span>github.com/HackxAnkit/shiny-spork</span>
+        </div>
+        <div class="contact-item">
+          <i class="fas fa-globe"></i>
+          <span>www.cashflowminimizer.com</span>
+        </div>
+      </div>
     </div>
   </div>
 

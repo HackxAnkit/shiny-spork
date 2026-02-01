@@ -1,9 +1,67 @@
 // Client-side expense tracker with advanced UI
 let expenses = [];
+let currentLanguage = 'en';
+let currentTheme = 'dark';
+
+const translations = {
+  en: {
+    title: 'Cash Flow Minimizer',
+    about: 'About',
+    contact: 'Contact',
+    theme: 'Dark Mode',
+    themeLight: 'Light Mode',
+    totalExpensesLabel: 'Total Expenses',
+    totalAmountLabel: 'Total Amount',
+    totalPeopleLabel: 'People Involved',
+    addExpenseTab: 'Add Expense',
+    allExpensesTab: 'All Expenses',
+    settlementsTab: 'Settlements',
+    balanceTab: 'Balance Sheet',
+    aboutTitle: 'About Cash Flow Minimizer',
+    aboutText1: 'Cash Flow Minimizer is a smart expense splitting tool that helps you manage shared expenses among friends, roommates, or colleagues.',
+    aboutText2: 'The app uses an optimized algorithm to minimize the number of transactions needed to settle all debts, making it easier and faster to split bills.',
+    features: 'Features:',
+    feature1: '✓ Add and manage expenses easily',
+    feature2: '✓ Automatic settlement calculations',
+    feature3: '✓ Visual balance sheet',
+    feature4: '✓ Minimal transaction optimization',
+    feature5: '✓ Dark/Light mode support',
+    feature6: '✓ Multi-language support (English/Hindi)',
+    contactTitle: 'Contact Us',
+    contactText: 'Have questions or feedback? We\'d love to hear from you!'
+  },
+  hi: {
+    title: 'कैश फ्लो मिनिमाइज़र',
+    about: 'के बारे में',
+    contact: 'संपर्क करें',
+    theme: 'डार्क मोड',
+    themeLight: 'लाइट मोड',
+    totalExpensesLabel: 'कुल खर्चे',
+    totalAmountLabel: 'कुल राशि',
+    totalPeopleLabel: 'शामिल लोग',
+    addExpenseTab: 'खर्च जोड़ें',
+    allExpensesTab: 'सभी खर्चे',
+    settlementsTab: 'निपटान',
+    balanceTab: 'बैलेंस शीट',
+    aboutTitle: 'कैश फ्लो मिनिमाइज़र के बारे में',
+    aboutText1: 'कैश फ्लो मिनिमाइज़र एक स्मार्ट खर्च विभाजन उपकरण है जो आपको दोस्तों, रूममेट्स या सहकर्मियों के बीच साझा खर्चों को प्रबंधित करने में मदद करता है।',
+    aboutText2: 'यह ऐप सभी ऋणों को निपटाने के लिए आवश्यक लेनदेन की संख्या को कम करने के लिए एक अनुकूलित एल्गोरिथ्म का उपयोग करता है, जिससे बिल विभाजित करना आसान और तेज़ हो जाता है।',
+    features: 'विशेषताएँ:',
+    feature1: '✓ आसानी से खर्च जोड़ें और प्रबंधित करें',
+    feature2: '✓ स्वचालित निपटान गणना',
+    feature3: '✓ दृश्य बैलेंस शीट',
+    feature4: '✓ न्यूनतम लेनदेन अनुकूलन',
+    feature5: '✓ डार्क/लाइट मोड समर्थन',
+    feature6: '✓ बहु-भाषा समर्थन (अंग्रेजी/हिंदी)',
+    contactTitle: 'हमसे संपर्क करें',
+    contactText: 'कोई प्रश्न या प्रतिक्रिया है? हम आपसे सुनना पसंद करेंगे!'
+  }
+};
 
 window.addEventListener('DOMContentLoaded', () => {
   loadExpenses();
   updateSummary();
+  loadPreferences();
 });
 
 // Tab Navigation
@@ -403,4 +461,102 @@ function showNotification(message, type) {
   // For now, we'll use a simple alert
   // This can be enhanced with a toast notification library
   console.log(`${type.toUpperCase()}: ${message}`);
+}
+
+// Modal Functions
+function showModal(modalType) {
+  const modal = document.getElementById(`${modalType}Modal`);
+  if (modal) {
+    modal.classList.add('active');
+  }
+}
+
+function closeModal(modalType) {
+  const modal = document.getElementById(`${modalType}Modal`);
+  if (modal) {
+    modal.classList.remove('active');
+  }
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+  if (event.target.classList.contains('modal')) {
+    event.target.classList.remove('active');
+  }
+}
+
+// Theme Toggle
+function toggleTheme() {
+  const body = document.body;
+  const themeBtn = document.getElementById('themeToggle');
+  const themeIcon = themeBtn.querySelector('i');
+  const themeText = themeBtn.querySelector('span');
+  
+  if (currentTheme === 'dark') {
+    body.classList.add('light-mode');
+    themeIcon.classList.remove('fa-moon');
+    themeIcon.classList.add('fa-sun');
+    themeText.textContent = currentLanguage === 'en' ? 'Light Mode' : 'लाइट मोड';
+    currentTheme = 'light';
+  } else {
+    body.classList.remove('light-mode');
+    themeIcon.classList.remove('fa-sun');
+    themeIcon.classList.add('fa-moon');
+    themeText.textContent = currentLanguage === 'en' ? 'Dark Mode' : 'डार्क मोड';
+    currentTheme = 'dark';
+  }
+  
+  localStorage.setItem('theme', currentTheme);
+}
+
+// Language Toggle
+function toggleLanguage() {
+  currentLanguage = currentLanguage === 'en' ? 'hi' : 'en';
+  document.getElementById('currentLang').textContent = currentLanguage === 'en' ? 'English' : 'हिंदी';
+  updateLanguage();
+  localStorage.setItem('language', currentLanguage);
+}
+
+// Update all text elements with current language
+function updateLanguage() {
+  const elements = document.querySelectorAll('[data-lang]');
+  elements.forEach(element => {
+    const key = element.getAttribute('data-lang');
+    if (translations[currentLanguage][key]) {
+      element.textContent = translations[currentLanguage][key];
+    }
+  });
+  
+  // Update theme button text based on current state
+  const themeBtn = document.getElementById('themeToggle');
+  const themeText = themeBtn.querySelector('span');
+  if (currentTheme === 'dark') {
+    themeText.textContent = translations[currentLanguage].theme;
+  } else {
+    themeText.textContent = translations[currentLanguage].themeLight;
+  }
+}
+
+// Load saved preferences
+function loadPreferences() {
+  // Load theme
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) {
+    currentTheme = savedTheme;
+    if (currentTheme === 'light') {
+      document.body.classList.add('light-mode');
+      const themeBtn = document.getElementById('themeToggle');
+      const themeIcon = themeBtn.querySelector('i');
+      themeIcon.classList.remove('fa-moon');
+      themeIcon.classList.add('fa-sun');
+    }
+  }
+  
+  // Load language
+  const savedLanguage = localStorage.getItem('language');
+  if (savedLanguage) {
+    currentLanguage = savedLanguage;
+    document.getElementById('currentLang').textContent = currentLanguage === 'en' ? 'English' : 'हिंदी';
+    updateLanguage();
+  }
 }
